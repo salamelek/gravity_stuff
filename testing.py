@@ -6,3 +6,4 @@ for i in range(len(points)):
         b = points[j + 1 + i]
 
         print(a, b)
+
