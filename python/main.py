@@ -44,6 +44,12 @@ class Point:
         self.vx += self.ax
         self.vy += self.ay
 
+        if self.x >= canvas_width or self.x <= 0:
+            self.vx *= -1
+
+        if self.y >= canvas_height or self.y <= 0:
+            self.vy *= -1
+
         self.Fx = 0
         self.Fy = 0
 
