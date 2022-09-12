@@ -1,12 +1,12 @@
 import tkinter
 
-from math import sqrt, sin, asin
+from math import sqrt, sin, asin, pi, cos
 
 
 active = True
 
 canvas_width = 1000
-canvas_height = 700
+canvas_height = 1000
 
 G = 6.67430e-11
 
@@ -17,7 +17,7 @@ canvas = tkinter.Canvas(root, height=canvas_height, width=canvas_width, backgrou
 canvas.pack()
 
 
-class Force:
+class Vector:
     def __init__(self, magnitude, direction):
         self.magnitude = magnitude
         self.direction = direction
@@ -39,10 +39,11 @@ class Point:
 
 
 def dist(a, b):
+    # TODO check if the passed argument is just a int or a Point object, act accordingly
     return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
 
-def create_point(x, y, radius=5, velocity=0.0, mass=1.0, force=Force(magnitude=0.0, direction=0.0)):
+def create_point(x, y, radius=5, velocity=0.0, mass=1.0, force=Vector(magnitude=0.0, direction=0.0)):
     points.append(Point(x=x, y=y, radius=radius, velocity=velocity, mass=mass, force=force))
 
 
@@ -62,29 +63,18 @@ def calc_interactions():
                 # iterates through every interaction
                 # for every iteration it sums the current F with the previous F (of every new frame F is 0)
 
-                mag = G * ((a.mass * b.mass) / dist(a, b) ** 2)
-
-                new_fa = Force(
-                    magnitude=mag,
-                    direction=()
-                )
-                new_fb = Force(
-                    magnitude=mag,
-                    direction=0
-                )
-
 
 def calc_actions():
     for point in points:
         # calculate vx, vy from vector
         # set x and y in relation to TIME PASSED, not frame
-        pass
+        canvas.move(point, 1, 1)
+        # TODO MOVE THE FUCKING POINT
 
 
 def setup():
-    create_point(350, 350, velocity=1)
-    create_point(650, 425)
-    create_point(500, 450)
+    create_point(450, 500)
+    create_point(550, 500)
 
 
 if __name__ == '__main__':

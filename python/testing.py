@@ -1,10 +1,3 @@
-# points = ["a", "b", "c", "d", "e"]
-points = ["a", "b"]
+import math
 
-for i in range(len(points)):
-    for j in range(len(points) - (i + 1)):
-        a = points[i]
-        b = points[j + 1 + i]
-
-        print(a, b)
-
+print(math.sin(math.pi / 2))
