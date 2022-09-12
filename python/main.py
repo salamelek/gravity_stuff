@@ -6,7 +6,7 @@ import math
 active = True
 refresh_rate = 0
 canvas_width = 1000
-canvas_height = 1000
+canvas_height = 700
 G = 6.67430e-3
 
 points = []

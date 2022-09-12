@@ -1,13 +1,12 @@
 import tkinter
-import random
-import time
-from math import sqrt
+
+from math import sqrt, sin, asin
 
 
 active = True
 
 canvas_width = 1000
-canvas_height = 1000
+canvas_height = 700
 
 G = 6.67430e-11
 
@@ -39,6 +38,10 @@ class Point:
         pass
 
 
+def dist(a, b):
+    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+
+
 def create_point(x, y, radius=5, velocity=0.0, mass=1.0, force=Force(magnitude=0.0, direction=0.0)):
     points.append(Point(x=x, y=y, radius=radius, velocity=velocity, mass=mass, force=force))
 
@@ -55,15 +58,31 @@ def calc_interactions():
             for j in range(len(points) - (i + 1)):
                 a = points[i]
                 b = points[j + 1 + i]
+
                 # iterates through every interaction
+                # for every iteration it sums the current F with the previous F (of every new frame F is 0)
+
+                mag = G * ((a.mass * b.mass) / dist(a, b) ** 2)
+
+                new_fa = Force(
+                    magnitude=mag,
+                    direction=()
+                )
+                new_fb = Force(
+                    magnitude=mag,
+                    direction=0
+                )
 
 
 def calc_actions():
-    pass
+    for point in points:
+        # calculate vx, vy from vector
+        # set x and y in relation to TIME PASSED, not frame
+        pass
 
 
 def setup():
-    create_point(350, 350)
+    create_point(350, 350, velocity=1)
     create_point(650, 425)
     create_point(500, 450)
 
