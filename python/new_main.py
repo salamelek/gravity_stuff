@@ -37,14 +37,13 @@ class Point:
     def add_force(self, force):
         pass
 
+    def move(self, x=0.0, y=0.0):
+        canvas.move(self.point, x, y)
+
 
 def dist(a, b):
     # TODO check if the passed argument is just a int or a Point object, act accordingly
     return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
-
-
-def create_point(x, y, radius=5, velocity=0.0, mass=1.0, force=Vector(magnitude=0.0, direction=0.0)):
-    points.append(Point(x=x, y=y, radius=radius, velocity=velocity, mass=mass, force=force))
 
 
 def check_pos():
@@ -68,13 +67,16 @@ def calc_actions():
     for point in points:
         # calculate vx, vy from vector
         # set x and y in relation to TIME PASSED, not frame
-        canvas.move(point, 1, 1)
-        # TODO MOVE THE FUCKING POINT
+        point.move(point.v)
+
+
+def create_point(x, y, radius=5, velocity=0.0, mass=1.0, force=Vector(magnitude=0.0, direction=0.0)):
+    points.append(Point(x=x, y=y, radius=radius, velocity=velocity, mass=mass, force=force))
 
 
 def setup():
-    create_point(450, 500)
-    create_point(550, 500)
+    create_point(450, 500, velocity=1)
+    # create_point(550, 500)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,10 @@
-import math
+import tkinter
 
-print(math.sin(math.pi / 2))
+active = True
+
+points = []
+
+points.append()
+
+while active:
+    pass
