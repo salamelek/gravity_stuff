@@ -140,7 +140,7 @@ class Engine:
 
         self.canvas.update()
 
-    def create_point(self, x, y, r=3.0, vx=0.0, vy=0.0, ax=0.0, ay=0.0, f=0.0, fx=0.0, fy=0.0, mass=1.0):
+    def create_point(self, x, y, r=5.0, vx=0.0, vy=0.0, ax=0.0, ay=0.0, f=0.0, fx=0.0, fy=0.0, mass=1.0):
         point = Point(canvas=self.canvas, x=x, y=y, r=r, vx=vx, vy=vy, ax=ax, ay=ay, f=f, fx=fx, fy=fy, mass=mass)
         points.append(point)
 
@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
     myEngine = Engine()
 
-    for i in range(20):
+    for i in range(10):
         myEngine.create_point(x=random.randint(11, canvas_width - 11), y=random.randint(11, canvas_height - 11))
 
     # myEngine.create_point(400, 500)
