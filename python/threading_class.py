@@ -36,14 +36,19 @@ class Point(Thread):
         self.r = radius
         self.v = velocity
 
+        self.active = True
+
         self.point = canvas.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill="red")
 
     def run(self):
-        while True:
+        while self.active:
             for b in points:
                 if b != self:
                     # iterates through every point, except for itself
                     f_mag = G * ((self.m * b.m) / dist(self, b) ** 2)
+
+    def stop(self):
+        self.active = False
 
 
 def dist(a, b):
@@ -65,3 +70,12 @@ if __name__ == '__main__':
     # make the points alive
     for point in points:
         point.start()
+
+    while active:
+        try:
+            canvas.update()
+        except tkinter.TclError:
+            active = False
+            for point in points:
+                point.stop()
+            print("Shut down successfully!")
