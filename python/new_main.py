@@ -3,6 +3,8 @@ import tkinter
 from math import sqrt, sin, asin, pi, cos
 import time
 
+import Exceptions
+
 
 active = True
 
@@ -70,8 +72,29 @@ class Point:
 
 
 def dist(a, b):
-    # TODO check if the passed argument is just a int or a Point object, act accordingly
-    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+    if type(a) == tuple:
+        ax = a[0]
+        ay = a[1]
+
+    elif type(a) == Point:
+        ax = a.x
+        ay = a.y
+
+    else:
+        raise Exceptions.IncorrectoPointCoordsError(a)
+
+    if type(b) == tuple:
+        bx = b[0]
+        by = b[1]
+
+    elif type(b) == Point:
+        bx = b.x
+        by = b.y
+
+    else:
+        raise Exceptions.IncorrectoPointCoordsError(b)
+
+    return sqrt((ax - bx) ** 2 + (ay - by) ** 2)
 
 
 def check_pos():

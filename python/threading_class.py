@@ -1,15 +1,15 @@
 from threading import Thread
 import tkinter
-from math import sqrt
-
+from math import sqrt, sin, cos, asin
+import Exceptions
 
 active = True
 
 # 1px = 1m
-canvas_width = 500
-canvas_height = 500
+canvas_width = 1000
+canvas_height = 1000
 
-G = 6.67430e5-11
+G = 6.67430e5 - 11
 
 points = []
 
@@ -40,23 +40,75 @@ class Point(Thread):
 
         self.point = canvas.create_oval(self.x - self.r, self.y - self.r, self.x + self.r, self.y + self.r, fill="red")
 
+    def add_force(self, new_f):
+        a = self.F
+        b = new_f
+
+        mag_x = a.magnitude * cos(a.direction) + b.magnitude * cos(b.direction)
+        mag_y = a.magnitude * sin(a.direction) + b.magnitude * sin(b.direction)
+
+        magnitude = sqrt(mag_x ** 2 + mag_y ** 2)
+        direction = asin(mag_y / magnitude)
+
+        self.F = Vector(magnitude=magnitude, direction=direction)
+
     def run(self):
         while self.active:
-            for b in points:
-                if b != self:
-                    # iterates through every point, except for itself
-                    f_mag = G * ((self.m * b.m) / dist(self, b) ** 2)
+            # self.calc_interactions()
+            self.calc_actions()
+
+    def move(self, x=0, y=0):
+        # TODO 'RuntimeError: main thread is not in main loop' --> https://stackoverflow.com/questions/14694408/runtimeerror-main-thread-is-not-in-main-loop
+        # TODO try either updating in the main loop using the new coords or use the mkTkinter lib
+        canvas.move(self.point, x, y)
+
+    def calc_interactions(self):
+        for point in points:
+            if point != self:
+                # iterates through every point, except for itself
+                f_mag = G * ((self.m * point.m) / dist(self, point) ** 2)
+                height = dist((point.x, self.y), point)
+                hypotenuse = dist(self, point)
+                f_dir = asin(height / hypotenuse)
+
+                self.add_force(Vector(magnitude=f_mag, direction=f_dir))
+
+    def calc_actions(self):
+        vx = self.v.magnitude * cos(self.v.direction)
+        vy = self.v.magnitude * sin(self.v.direction)
+        self.move(vx, vy)
 
     def stop(self):
         self.active = False
 
 
 def dist(a, b):
-    # TODO check if the passed argument is just a int or a Point object, act accordingly
-    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+    if type(a) == tuple:
+        ax = a[0]
+        ay = a[1]
+
+    elif type(a) == Point:
+        ax = a.x
+        ay = a.y
+
+    else:
+        raise Exceptions.IncorrectoPointCoordsError(a)
+
+    if type(b) == tuple:
+        bx = b[0]
+        by = b[1]
+
+    elif type(b) == Point:
+        bx = b.x
+        by = b.y
+
+    else:
+        raise Exceptions.IncorrectoPointCoordsError(b)
+
+    return sqrt((ax - bx) ** 2 + (ay - by) ** 2)
 
 
-def create_point(x, y, radius=5.0, mass=1.0, velocity=0.0, force=Vector(magnitude=0, direction=0)):
+def create_point(x, y, radius=5.0, mass=1.0, velocity=Vector(magnitude=0.0, direction=0.0), force=Vector(magnitude=0.0, direction=0.0)):
     points.append(Point(x, y, radius, mass, velocity, force))
 
 
@@ -73,6 +125,8 @@ if __name__ == '__main__':
 
     while active:
         try:
+            for point in points:
+                canvas.move(point, )
             canvas.update()
         except tkinter.TclError:
             active = False
