@@ -130,7 +130,7 @@ def calc_interactions():
                     direction=direction_b
                 )
 
-                a.add_force(fa)
+                a.add_forces(fa)
 
                 # only on last
                 # if i == len(points) - 1:
