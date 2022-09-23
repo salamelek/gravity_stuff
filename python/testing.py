@@ -1,19 +1,15 @@
-my_list = []
+import tkinter
+
+canvas_width = 500
+canvas_height = 500
+
+root = tkinter.Tk()
+canvas = tkinter.Canvas(root, height=canvas_height, width=canvas_width, background="black")
+canvas.pack()
+
+s = canvas.create_oval(100, 100, 400, 400, fill="white")
+
+canvas.moveto(s, 250 - 150, 250 - 150)
 
 
-class Test:
-    def __init__(self, i):
-        self.a = i
-
-    def print_list(self):
-        for i in my_list:
-            if i is not self:
-                print(i.a)
-
-
-for i in range(2):
-    my_list.append(Test(i))
-
-
-for obj in my_list:
-    obj.print_list()
+root.mainloop()

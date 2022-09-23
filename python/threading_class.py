@@ -10,7 +10,7 @@ active = True
 canvas_width = 500
 canvas_height = 500
 
-G = 6.67430e-11
+G = 6.67430e+05  # e-11
 
 points = []
 
@@ -96,11 +96,10 @@ class Point(Thread):
                 if b != self:
                     # add up all the forces
                     f_mag = G * ((self.m * b.m) / (dist(self, b) ** 2))
-                    height = dist((b.x, self.y), b)
-                    hypotenuse = dist(self, b)
-                    f_dir = asin(height / hypotenuse)
 
-                    self.F = add_forces(self.F, Vector(magnitude=f_mag, direction=f_dir))
+                    # TODO calculate direction (FUUUUUUUUUUUUUUUUUUUUUUUUUUCK)
+
+                    self.F = add_forces(self.F, Vector(magnitude=f_mag, direction=0))
 
             # convert calculated force to acceleration
             dir_a = self.F.direction
@@ -128,13 +127,14 @@ class Point(Thread):
         self.active = False
 
 
-def create_point(x, y, radius=5.0, mass=1.0, velocity=Vector(magnitude=0.0, direction=0.0), force=Vector(magnitude=0.0, direction=0.0), acceleration=Vector(magnitude=0.0, direction=0.0)):
+def create_point(x, y, radius=5.0, mass=1.0, velocity=Vector(magnitude=0.0, direction=0.0),
+                 force=Vector(magnitude=0.0, direction=0.0), acceleration=Vector(magnitude=0.0, direction=0.0)):
     points.append(Point(x, y, radius, mass, velocity, force, acceleration))
 
 
 def setup():
-    create_point(100, 100, velocity=Vector(magnitude=100, direction=0.0))
-    create_point(100, 200)
+    create_point(100, 100, velocity=Vector(magnitude=0, direction=0.0))
+    create_point(200, 200)
 
 
 def stop():
@@ -143,11 +143,14 @@ def stop():
 
     for point in points:
         point.stop()
+
+    root.destroy()
     print("Shut down successfully!")
 
 
 if __name__ == '__main__':
     setup()
+    root.protocol("WM_DELETE_WINDOW", stop)
 
     # make the points alive
     for point in points:
@@ -155,9 +158,7 @@ if __name__ == '__main__':
 
     while active:
         for point in points:
-            canvas.coords(point.point, point.x - point.r, point.y - point.r, point.x + point.r, point.y + point.r)
+            # the moveto() moves the top left angle so we have to subtract r
+            canvas.moveto(point.point, point.x - point.r, point.y - point.r)
 
-        try:
-            canvas.update()
-        except tkinter.TclError as e:
-            stop()
+        canvas.update()
