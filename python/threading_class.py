@@ -1,6 +1,6 @@
 from threading import Thread
 import tkinter
-from math import sqrt, sin, cos, asin
+from math import sqrt, sin, cos, asin, pi
 import Exceptions
 import time
 
@@ -10,7 +10,7 @@ active = True
 canvas_width = 500
 canvas_height = 500
 
-G = 6.67430e+05  # e-11
+G = 6.67430e+04  # e-11
 
 points = []
 
@@ -26,18 +26,22 @@ class Vector:
         self.direction = direction
 
 
-def add_forces(vect_a, vect_b):
+def add_vectors(vect_a, vect_b):
     a = vect_a
     b = vect_b
 
     mag_x = a.magnitude * cos(a.direction) + b.magnitude * cos(b.direction)
     mag_y = a.magnitude * sin(a.direction) + b.magnitude * sin(b.direction)
-
     magnitude = sqrt(mag_x ** 2 + mag_y ** 2)
-    if magnitude == 0.0:
-        direction = 0
-    else:
+
+    if magnitude != 0.0:
         direction = asin(mag_y / magnitude)
+        if mag_x < 0:
+            direction = pi - direction
+            # TODO this shit does not work, idk why
+    else:
+        # since there is no magnitude, the direction is useless
+        direction = 0.0
 
     return Vector(magnitude=magnitude, direction=direction)
 
@@ -97,9 +101,12 @@ class Point(Thread):
                     # add up all the forces
                     f_mag = G * ((self.m * b.m) / (dist(self, b) ** 2))
 
-                    # TODO calculate direction (FUUUUUUUUUUUUUUUUUUUUUUUUUUCK)
+                    yb = dist((b.x, self.y), b)
+                    f_dir = asin(yb / dist(self, b))
+                    if b.x < self.x:
+                        f_dir = pi - f_dir
 
-                    self.F = add_forces(self.F, Vector(magnitude=f_mag, direction=0))
+                    self.F = add_vectors(self.F, Vector(magnitude=f_mag, direction=f_dir))
 
             # convert calculated force to acceleration
             dir_a = self.F.direction
@@ -107,11 +114,11 @@ class Point(Thread):
             new_a = Vector(magnitude=mag_a, direction=dir_a)
 
             # add accelerations
-            self.a = add_forces(self.a, new_a)
+            self.a = add_vectors(self.a, new_a)
 
             # convert calculated acceleration in velocity
             at = Vector(magnitude=(self.a.magnitude * (time.time() - self.time)), direction=self.a.direction)
-            self.v = add_forces(self.v, at)
+            self.v = add_vectors(self.v, at)
 
             # move
             self.x += self.v.magnitude * cos(self.v.direction) * (time.time() - self.time)
@@ -123,11 +130,13 @@ class Point(Thread):
             self.a = self.const_a
             self.time = time.time()
 
+            time.sleep(1)
+
     def stop(self):
         self.active = False
 
 
-def create_point(x, y, radius=5.0, mass=1.0, velocity=Vector(magnitude=0.0, direction=0.0),
+def create_point(x, y, radius=10.0, mass=1.0, velocity=Vector(magnitude=0.0, direction=0.0),
                  force=Vector(magnitude=0.0, direction=0.0), acceleration=Vector(magnitude=0.0, direction=0.0)):
     points.append(Point(x, y, radius, mass, velocity, force, acceleration))
 
@@ -158,7 +167,8 @@ if __name__ == '__main__':
 
     while active:
         for point in points:
-            # the moveto() moves the top left angle so we have to subtract r
+            # the moveto() moves the top left angle, so we have to subtract r
             canvas.moveto(point.point, point.x - point.r, point.y - point.r)
 
         canvas.update()
+        # TODO the points vibrate, i have no clue why
