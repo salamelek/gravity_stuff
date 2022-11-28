@@ -46,14 +46,14 @@ class Point:
         b = force
 
         # fx = ax + bx ...
-        fx = a.magnitude * cos(a.direction) + b.magnitude * cos(b.direction)
-        fy = a.magnitude * sin(a.direction) + b.magnitude * sin(b.direction)
+        fx = a.force * cos(a.direction) + b.force * cos(b.direction)
+        fy = a.force * sin(a.direction) + b.force * sin(b.direction)
         magnitude = sqrt(fx ** 2 + fy ** 2)
         direction = asin(fy / magnitude)
-        # print(magnitude, direction)
+        # print(force, direction)
         # print(direction)
 
-        self.F.magnitude = magnitude
+        self.F.force = magnitude
         self.F.direction = direction
 
     def move(self, x=0.0, y=0.0):
@@ -61,7 +61,7 @@ class Point:
         self.x += x
         self.y += y
 
-        self.a = self.F.magnitude / self.m
+        self.a = self.F.force / self.m
         # TODO should be +=, but its all directional :')
         self.v = self.a * (time.time() - self.t)
 
@@ -113,7 +113,7 @@ def calc_interactions():
                 # iterates through every interaction
                 # for every iteration it sums the current F with the previous F (of every new frame F is 0)
 
-                # magnitude of Fa and Fb
+                # force of Fa and Fb
                 magnitude = G * ((a.m * b.m) / dist(a, b) ** 2)
 
                 # direction of Fa and Fb
@@ -148,7 +148,7 @@ def calc_actions():
 
         # TODO if im not wrong, using a will mean no resetting
         # reset F
-        # point.F.magnitude = 0
+        # point.F.force = 0
         # point.F.direction = 0
 
 

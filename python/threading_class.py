@@ -21,8 +21,8 @@ canvas.pack()
 
 
 class Vector:
-    def __init__(self, magnitude, direction):
-        self.magnitude = magnitude
+    def __init__(self, force, direction):
+        self.force = force
         self.direction = direction
 
 
@@ -30,20 +30,24 @@ def add_vectors(vect_a, vect_b):
     a = vect_a
     b = vect_b
 
-    mag_x = a.magnitude * cos(a.direction) + b.magnitude * cos(b.direction)
-    mag_y = a.magnitude * sin(a.direction) + b.magnitude * sin(b.direction)
-    magnitude = sqrt(mag_x ** 2 + mag_y ** 2)
+    fx = a.force * cos(a.direction) + b.force * cos(b.direction)
+    fy = a.force * sin(a.direction) + b.force * sin(b.direction)
+    magnitude = sqrt((fx ** 2) + (fy ** 2))
 
     if magnitude != 0.0:
-        direction = asin(mag_y / magnitude)
-        if mag_x < 0:
-            direction = pi - direction
-            # TODO this shit does not work, idk why
+        direction = asin(fy / magnitude)
+        # TODO no work
+        if fx < 0 < fy:
+            direction = (1 * pi) - direction
+        if fy < 0 > fx:
+            direction = (1.5 * pi) - direction
+        if fy < 0 < fx:
+            direction = (2 * pi) - direction
     else:
-        # since there is no magnitude, the direction is useless
+        # since there is no force, the direction is useless
         direction = 0.0
 
-    return Vector(magnitude=magnitude, direction=direction)
+    return Vector(force=magnitude, direction=direction)
 
 
 def dist(a, b):
@@ -106,23 +110,23 @@ class Point(Thread):
                     if b.x < self.x:
                         f_dir = pi - f_dir
 
-                    self.F = add_vectors(self.F, Vector(magnitude=f_mag, direction=f_dir))
+                    self.F = add_vectors(self.F, Vector(force=f_mag, direction=f_dir))
 
             # convert calculated force to acceleration
             dir_a = self.F.direction
-            mag_a = self.F.magnitude / self.m
-            new_a = Vector(magnitude=mag_a, direction=dir_a)
+            mag_a = self.F.force / self.m
+            new_a = Vector(force=mag_a, direction=dir_a)
 
             # add accelerations
             self.a = add_vectors(self.a, new_a)
 
             # convert calculated acceleration in velocity
-            at = Vector(magnitude=(self.a.magnitude * (time.time() - self.time)), direction=self.a.direction)
+            at = Vector(force=(self.a.force * (time.time() - self.time)), direction=self.a.direction)
             self.v = add_vectors(self.v, at)
 
             # move
-            self.x += self.v.magnitude * cos(self.v.direction) * (time.time() - self.time)
-            self.y += self.v.magnitude * sin(self.v.direction) * (time.time() - self.time)
+            self.x += self.v.force * cos(self.v.direction) * (time.time() - self.time)
+            self.y += self.v.force * sin(self.v.direction) * (time.time() - self.time)
 
             # reset forces, accelerations, velocities, TIME (all of them will be 0, except const_forces)
             self.F = self.const_F
@@ -136,13 +140,13 @@ class Point(Thread):
         self.active = False
 
 
-def create_point(x, y, radius=10.0, mass=1.0, velocity=Vector(magnitude=0.0, direction=0.0),
-                 force=Vector(magnitude=0.0, direction=0.0), acceleration=Vector(magnitude=0.0, direction=0.0)):
+def create_point(x, y, radius=10.0, mass=1.0, velocity=Vector(force=0.0, direction=0.0),
+                 force=Vector(force=0.0, direction=0.0), acceleration=Vector(force=0.0, direction=0.0)):
     points.append(Point(x, y, radius, mass, velocity, force, acceleration))
 
 
 def setup():
-    create_point(100, 100, velocity=Vector(magnitude=0, direction=0.0))
+    create_point(100, 100, velocity=Vector(force=0, direction=0.0))
     create_point(200, 200)
 
 
