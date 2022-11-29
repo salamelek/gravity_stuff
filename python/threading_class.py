@@ -25,10 +25,18 @@ class Vector:
         self.force = force
         self.direction = direction
 
+    def print_self(self):
+        print("=======================")
+        print(f"Force: {self.force} N\nDirection: {self.direction * (180 / pi)} DEG | {self.direction} RAD")
+        print("=======================")
+
 
 def add_vectors(vect_a, vect_b):
     a = vect_a
     b = vect_b
+
+    a.print_self()
+    b.print_self()
 
     fx = a.force * cos(a.direction) + b.force * cos(b.direction)
     fy = a.force * sin(a.direction) + b.force * sin(b.direction)
@@ -36,13 +44,11 @@ def add_vectors(vect_a, vect_b):
 
     if magnitude != 0.0:
         direction = asin(fy / magnitude)
-        # TODO no work
-        if fx < 0 < fy:
-            direction = (1 * pi) - direction
-        if fy < 0 > fx:
-            direction = (1.5 * pi) - direction
-        if fy < 0 < fx:
-            direction = (2 * pi) - direction
+
+        # there are 4 quadrants
+        if fx < 0:
+            direction = pi - direction
+
     else:
         # since there is no force, the direction is useless
         direction = 0.0
@@ -140,22 +146,21 @@ class Point(Thread):
         self.active = False
 
 
-def create_point(x, y, radius=10.0, mass=1.0, velocity=Vector(force=0.0, direction=0.0),
-                 force=Vector(force=0.0, direction=0.0), acceleration=Vector(force=0.0, direction=0.0)):
+def create_point(x, y, radius=10.0, mass=1.0, velocity=Vector(force=0.0, direction=0.0), force=Vector(force=0.0, direction=0.0), acceleration=Vector(force=0.0, direction=0.0)):
     points.append(Point(x, y, radius, mass, velocity, force, acceleration))
 
 
 def setup():
-    create_point(100, 100, velocity=Vector(force=0, direction=0.0))
     create_point(200, 200)
+    create_point(100, 100)
 
 
 def stop():
     global active
     active = False
 
-    for point in points:
-        point.stop()
+    for list_point in points:
+        list_point.stop()
 
     root.destroy()
     print("Shut down successfully!")
