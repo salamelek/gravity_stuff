@@ -7,7 +7,7 @@ import Exceptions
 pygame.init()
 
 active = True
-target_fps = 60
+target_fps = 360
 width = 1200
 height = 650
 bcg_color = "black"
@@ -43,8 +43,6 @@ class Ball:
 
     def update(self):
         pygame.draw.circle(screen, "red", (self.x, self.y), self.r, 0)
-
-    def update_time(self):
         self.time = time.time()
 
 
@@ -160,7 +158,7 @@ def update():
 
 
 def setup():
-    create_point(50, 50, acceleration=Vector(9.81, pi / 2))
+    create_point(50, 50, velocity=Vector(0, 0), acceleration=Vector(9.81, pi/2))
 
 
 if __name__ == '__main__':
