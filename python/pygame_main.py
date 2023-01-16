@@ -7,9 +7,9 @@ import Exceptions
 pygame.init()
 
 active = True
-target_fps = 360
+target_fps = 60
 width = 1200
-height = 650
+height = 1200
 bcg_color = "black"
 objects = []
 G = 6.67430e5  # -11
@@ -94,8 +94,8 @@ def dist(a, b):
     return sqrt((ax - bx) ** 2 + (ay - by) ** 2)
 
 
-def create_point(x, y, radius=5, velocity=Vector(magnitude=0, direction=0), mass=1.0, acceleration=Vector(magnitude=0, direction=0), force=Vector(magnitude=0.0, direction=0.0), my_time=time.time()):
-    objects.append(Ball(x=x, y=y, radius=radius, velocity=velocity, mass=mass, force=force, acceleration=acceleration, time=my_time))
+def create_point(x, y, radius=5, velocity=Vector(magnitude=0, direction=0), mass=1.0, force=Vector(magnitude=0.0, direction=0.0), my_time=time.time()):
+    objects.append(Ball(x=x, y=y, radius=radius, velocity=velocity, mass=mass, force=force, acceleration=Vector(magnitude=0, direction=0), time=my_time))
 
 
 def render():
@@ -122,12 +122,12 @@ def calc_interactions():
 def calc_actions():
     for my_object in objects:
         # convert forces to accelerations
-        acceleration_magnitude = my_object.F.magnitude
+        acceleration_magnitude = my_object.F.magnitude / my_object.m
         acceleration_direction = my_object.F.direction
         new_acceleration = Vector(magnitude=acceleration_magnitude, direction=acceleration_direction)
 
-        # add new acceleration
-        my_object.a = add_vectors(my_object.a, new_acceleration)
+        # assign new acceleration
+        my_object.a = new_acceleration
 
         # convert accelerations to velocities
         velocity_magnitude = my_object.a.magnitude * (time.time() - my_object.time)
@@ -158,16 +158,22 @@ def update():
 
 
 def setup():
-    create_point(50, 50, velocity=Vector(0, 0), acceleration=Vector(9.81, pi/2))
+    # create_point(0, 50, force=Vector(9.81, 0))
+    create_point(0, 100, velocity=Vector(50, 0))
 
 
 if __name__ == '__main__':
     setup()
+    begin = time.time()
     while active:
         render()
         calc_interactions()
         calc_actions()
         update()
+
+        if objects[0].x >= width:
+            print(time.time() - begin)
+            active = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
