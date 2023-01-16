@@ -11,6 +11,9 @@ radius = 20
 x_speed = 2
 y_speed = 3
 
+x = 50
+y = 50
+
 
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Moving Ball")
@@ -31,9 +34,9 @@ while active:
     y += y_speed
 
     # Check for collision with the edges of the screen
-    if x > size[0] - radius or x < radius:
+    if x > width - radius or x < radius:
         x_speed = -x_speed
-    if y > size[1] - radius or y < radius:
+    if y > height - radius or y < radius:
         y_speed = -y_speed
 
     # --- Drawing code should go here

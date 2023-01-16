@@ -146,7 +146,7 @@ def calc_actions():
         t = time.time() - point.t
         point.move(cos(fi) * v * t, sin(fi) * v * t)
 
-        # TODO if im not wrong, using a will mean no resetting
+        # TODO if im not wrong, using acceleration will mean no resetting
         # reset F
         # point.F.force = 0
         # point.F.direction = 0

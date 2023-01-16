@@ -11,13 +11,13 @@ def circle(phi):
     return np.array([r * np.cos(phi), r * np.sin(phi)])
 
 
-# create a figure with an axes
+# create acceleration figure with an axes
 fig, ax = plt.subplots()
 # set the axes limits
 ax.axis([-1.5, 1.5, -1.5, 1.5])
 # set equal aspect such that the circle is not shown as ellipse
 ax.set_aspect("equal")
-# create a point in the axes
+# create acceleration point in the axes
 point, = ax.plot(0, 1, marker="o")
 
 

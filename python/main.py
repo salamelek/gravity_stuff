@@ -114,16 +114,16 @@ class Engine:
                     wkx = a.wkx + b.wkx
                     wky = a.wky + b.wky
                     vx = math.sqrt((2 * wkx) / m)
-                    # if (a.vx < 0 and not b.vx < 0) or (not a.vx < 0 and b.vx < 0):
+                    # if (acceleration.vx < 0 and not b.vx < 0) or (not acceleration.vx < 0 and b.vx < 0):
                     #     vx *= -1
                     vy = math.sqrt((2 * wky) / m)
-                    # if (a.vy < 0 and not b.vy < 0) or (not a.vy < 0 and b.vy < 0):
+                    # if (acceleration.vy < 0 and not b.vy < 0) or (not acceleration.vy < 0 and b.vy < 0):
                     #     vy *= -1
 
                     new_points.append((x, y, r, vx, vy, m))
 
                     # the two bounce
-                    # bounce(a, b)
+                    # bounce(acceleration, b)
 
         for point_to_delete in points_to_delete:
             points.remove(point_to_delete)
