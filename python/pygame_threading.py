@@ -2,6 +2,7 @@ import pygame
 from threading import Thread
 from math import pi, sin, asin, sqrt, cos, atan
 import time
+import random
 
 import Exceptions
 
@@ -47,30 +48,31 @@ class Ball(Thread):
         self.time = time.time()
 
     def calc_interactions(self):
-        temporary_vectors = []
-        final_vector = Vector(0, 0)
-        for b in objects:
-            if b != self:
-                # add up all the forces
-                magnitude = G * ((self.m * b.m) / (dist(self, b) ** 2))
+        if len(objects) > 1:
+            temporary_vectors = []
+            final_vector = Vector(0, 0)
+            for b in objects:
+                if b != self:
+                    # add up all the forces
+                    magnitude = G * ((self.m * b.m) / (dist(self, b) ** 2))
 
-                if self.x != b.x:
-                    direction = atan((self.y - b.y)/(self.x - b.x))
-                    if self.x < b.x:
-                        direction += pi
+                    if self.x != b.x:
+                        direction = atan((self.y - b.y)/(self.x - b.x))
+                        if self.x < b.x:
+                            direction += pi
 
-                else:
-                    direction = atan((self.x - b.x) / (self.y - b.y))
-                    if self.y < b.y:
-                        direction += pi
+                    else:
+                        direction = atan((self.x - b.x) / (self.y - b.y))
+                        if self.y < b.y:
+                            direction += pi
 
-                # this is just temporary and should work only for 2 points. To make definitive, maybe make a list of vectors
-                temporary_vectors.append(Vector(magnitude, direction))
+                    # this is just temporary and should work only for 2 points. To make definitive, maybe make a list of vectors
+                    temporary_vectors.append(Vector(magnitude, direction))
 
-        for vector in temporary_vectors:
-            final_vector = add_vectors(final_vector, vector)
+            for vector in temporary_vectors:
+                final_vector = add_vectors(final_vector, vector)
 
-        self.F = final_vector
+            self.F = final_vector
 
     def calc_actions(self):
         acceleration_magnitude = self.F.magnitude / self.m
@@ -91,6 +93,23 @@ class Ball(Thread):
         # move
         self.x += self.v.magnitude * cos(self.v.direction) * (time.time() - self.time)
         self.y += self.v.magnitude * sin(self.v.direction) * (time.time() - self.time)
+
+        # bouncing off walls
+        if self.y >= (height - self.r):
+            self.y = height - self.r
+            self.v.direction = -self.v.direction
+
+        if self.y <= self.r:
+            self.y = self.r
+            self.v.direction = -self.v.direction
+
+        if self.x >= (width - self.r):
+            self.x = width - self.r
+            self.v.direction = pi - self.v.direction
+
+        if self.x <= self.r:
+            self.x = self.r
+            self.v.direction = pi - self.v.direction
 
     def run(self) -> None:
         print("point running")
@@ -191,10 +210,12 @@ def create_point(x, y, radius=5, velocity=Vector(magnitude=0, direction=0), mass
 
 
 def setup():
-    create_point(500, 700, mass=1000, velocity=Vector(5, 0))
-    create_point(700, 500, mass=1000, velocity=Vector(5, pi))
-    create_point(500, 500, mass=1000, velocity=Vector(5, 1/2*pi))
-    create_point(700, 700, mass=1000, velocity=Vector(5, -1/2*pi))
+    # create_point(600, 700, mass=1000, velocity=Vector(5, 0))
+    # create_point(700, 600, mass=1000, velocity=Vector(5, pi))
+    # create_point(600, 600, mass=1000, velocity=Vector(5, 1/2*pi))
+    # create_point(700, 700, mass=1000, velocity=Vector(5, -1/2*pi))
+    for i in range(10):
+        create_point(random.randint(5, 1195), random.randint(5, 1195), mass=1000, velocity=Vector(random.randint(0, 10), random.uniform(0, 2*pi)))
 
     for object in objects:
         object.start()
@@ -214,9 +235,9 @@ if __name__ == '__main__':
     setup()
     begin = time.time()
     while active:
-        if objects[0].x >= width:
-            print(time.time() - begin)
-            quit()
+        # if objects[0].x >= width:
+        #     print(time.time() - begin)
+        #     quit()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
