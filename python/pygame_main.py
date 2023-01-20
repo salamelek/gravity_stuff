@@ -9,7 +9,7 @@ pygame.init()
 active = True
 target_fps = 60
 width = 1200
-height = 1200
+height = 700
 bcg_color = "black"
 objects = []
 G = 6.67430e5  # -11
@@ -158,8 +158,9 @@ def update():
 
 
 def setup():
-    # create_point(0, 50, force=Vector(9.81, 0))
+    create_point(0, 50, force=Vector(9.81, 0))
     create_point(0, 100, velocity=Vector(50, 0))
+    create_point(50, 5, force=Vector(9.81, pi/2))
 
 
 if __name__ == '__main__':

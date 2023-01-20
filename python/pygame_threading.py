@@ -12,7 +12,7 @@ active = True
 target_fps = 144
 ups = 10000
 width = 1200
-height = 1200
+height = 700
 bcg_color = "black"
 objects = []
 G = 6.67430-11
@@ -66,7 +66,6 @@ class Ball(Thread):
                         if self.y < b.y:
                             direction += pi
 
-                    # this is just temporary and should work only for 2 points. To make definitive, maybe make a list of vectors
                     temporary_vectors.append(Vector(magnitude, direction))
 
             for vector in temporary_vectors:
@@ -205,17 +204,17 @@ def dist(a, b):
     return sqrt((ax - bx) ** 2 + (ay - by) ** 2)
 
 
-def create_point(x, y, radius=5, velocity=Vector(magnitude=0, direction=0), mass=1.0, force=Vector(magnitude=0.0, direction=0.0)):
+def create_point(x, y, radius=10, velocity=Vector(magnitude=0, direction=0), mass=1.0, force=Vector(magnitude=0.0, direction=0.0)):
     objects.append(Ball(x, y, radius, velocity, mass, force))
 
 
 def setup():
-    # create_point(600, 700, mass=1000, velocity=Vector(5, 0))
-    # create_point(700, 600, mass=1000, velocity=Vector(5, pi))
-    # create_point(600, 600, mass=1000, velocity=Vector(5, 1/2*pi))
-    # create_point(700, 700, mass=1000, velocity=Vector(5, -1/2*pi))
-    for i in range(10):
-        create_point(random.randint(5, 1195), random.randint(5, 1195), mass=1000, velocity=Vector(random.randint(0, 10), random.uniform(0, 2*pi)))
+    create_point(600, 695, mass=1000, velocity=Vector(10, 0))
+    create_point(695, 600, mass=1000, velocity=Vector(10, pi))
+    create_point(600, 600, mass=1000, velocity=Vector(10, 1/2*pi))
+    create_point(695, 695, mass=1000, velocity=Vector(10, -1/2*pi))
+    for i in range(5):
+        create_point(random.randint(5, 1195), random.randint(5, 1195), mass=random.randint(500, 1500), velocity=Vector(random.randint(0, 10), random.uniform(0, 2*pi)))
 
     for object in objects:
         object.start()
